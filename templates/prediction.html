@@ -1,0 +1,131 @@
+{% extends 'index.html' %}
+
+{% block a %}
+<div class="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col logo_section">
+                <div class="full">
+                    <div class="center-desk">
+                        <div class="logo">
+                            <a href="index.html">Bitcoin Time Series</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
+                <div class="menu-area">
+                    <div class="limit-box">
+                        <nav class="main-menu">
+                            <ul class="menu-area-main">
+                                <li> <a href="{{ url_for('home') }}">Home</a> </li>
+                                <li><a href="{{ url_for('viewdata') }}">View Data</a></li>
+                                <li class="active"><a href="{{ url_for('prediction') }}">Prediction</a></li>
+                                <li><a href="{{ url_for('index') }}">Logout</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4 heading-text">Prediction</h2>
+
+    <form method="POST" action="{{ url_for('prediction') }}">
+        <div class="form-group">
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Get Prediction</button>
+    </form>
+
+    {% if forecast %}
+    <h2 class="my-4">Predicted Bitcoin Prices</h2>
+
+
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Predicted Price</th>
+                <th>Lower Bound</th>
+                <th>Upper Bound</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in forecast %}
+            <tr>
+                <td>{{ row['ds'].strftime('%Y-%m-%d') }}</td>
+                <td>{{ row['yhat'] }}</td>
+                <td>{{ row['yhat_lower'] }}</td>
+                <td>{{ row['yhat_upper'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <canvas id="priceChart"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+
+        let data = '{{ forecast | tojson }}';
+
+        data = JSON.parse(data);
+        console.log(typeof data);
+        console.log(data);
+        const labels = data.map(item => {
+            const date = new Date(item.ds);
+            return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }); // Format date
+        });
+        const values = data.map(item => parseInt(item.yhat));
+        console.log(values)
+        const ctx = document.getElementById('priceChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Bitcoin Price in USD',
+                    data: values,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    fill: false // Remove area fill
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: false // Prevents y-axis from starting at 0 if values are high
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Bitcoin Prices Over Time'
+                    }
+                }
+            }
+        });
+    </script>
+
+    {% endif %}
+
+
+</div>
+{% endblock %}
