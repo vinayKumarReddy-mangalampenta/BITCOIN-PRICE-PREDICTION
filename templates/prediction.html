@@ -19,8 +19,10 @@
                         <nav class="main-menu">
                             <ul class="menu-area-main">
                                 <li> <a href="{{ url_for('home') }}">Home</a> </li>
-                                <li><a href="{{ url_for('viewdata') }}">View Data</a></li>
+                                <li class=""><a href="{{ url_for('viewdata') }}">View Data</a></li>
                                 <li class="active"><a href="{{ url_for('prediction') }}">Prediction</a></li>
+                                <li class=""><a href="{{ url_for('accuracy') }}">Accuracy</a></li>
+                                <li class=""><a href="{{ url_for('profile') }}">Profile</a></li>
                                 <li><a href="{{ url_for('index') }}">Logout</a></li>
                             </ul>
                         </nav>
@@ -37,14 +39,15 @@
     <h2 class="text-center mb-4 heading-text">Prediction</h2>
 
     <form method="POST" action="{{ url_for('prediction') }}">
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="model">Select Model:</label>
-            <select name="model" id="model" class="form-control">
-                <option value="Prophet" {% if selected_model=="Prophet" %}selected{% endif %}>Prophet</option>
-                <option value="Linear Regression" {% if selected_model=="Linear Regression" %}selected{% endif %}>Linear
-                    Regression</option>
+            <select value="LSTM" name="model">
+                <option value="Prophet">Prophet</option>
+                <option value="LSTM">LSTM</option>
+                <option value="ARIMA">ARIMA</option>
             </select>
-        </div>
+
+        </div> -->
 
         <div class="form-group">
             <label for="start_date">Start Date:</label>
@@ -76,8 +79,8 @@
             <tr>
                 <td>{{ row['ds'].strftime('%Y-%m-%d') }}</td>
                 <td>{{ row['yhat'] }}</td>
-                <td>{{ row['yhat_lower'] }}</td>
-                <td>{{ row['yhat_upper'] }}</td>
+                <!-- <td>{{ row['yhat_lower'] }}</td>
+                <td>{{ row['yhat_upper'] }}</td> -->
             </tr>
             {% endfor %}
         </tbody>

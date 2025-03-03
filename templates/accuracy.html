@@ -1,0 +1,127 @@
+{% extends 'index.html' %}
+{% block a %}
+<div class="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col logo_section">
+                <div class="full">
+                    <div class="center-desk">
+                        <div class="logo">
+                            <a href="index.html">Bitcoin Time Series</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
+                <div class="menu-area">
+                    <div class="limit-box">
+                        <nav class="main-menu">
+                            <ul class="menu-area-main">
+                                <li> <a href="{{ url_for('home') }}">Home</a> </li>
+                                <li class=""><a href="{{ url_for('viewdata') }}">View Data</a></li>
+                                <li class=""><a href="{{ url_for('prediction') }}">Prediction</a></li>
+                                <li class="active"><a href="{{ url_for('accuracy') }}">Accuracy</a></li>
+                                <li class=""><a href="{{ url_for('profile') }}">Profile</a></li>
+                                <li><a href="{{ url_for('index') }}">Logout</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Accuracy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        h2,
+        h4 {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: white;
+        }
+
+
+        .container-2 {
+            /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.1); */
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .metrics {
+            list-style: none;
+            padding: 0;
+        }
+
+        .metrics li {
+            background: rgba(0, 0, 0, 0.4);
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        img {
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background: #ff4b2b;
+            border: none;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #ff416c;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-2 mt-5">
+        <h2 class="text-center">Model Predictions and Accuracy</h2>
+        <div class="text-center mt-4">
+            <img src="data:image/png;base64,{{ plot_url }}" alt="Model Predictions">
+        </div>
+        <div class="mt-4">
+            <h4>Accuracy & Error Metrics:</h4>
+            <ul class="metrics">
+                <li>Prophet Accuracy: {{ metrics.prophet.accuracy }}%</li>
+                <li>Prophet MAE: {{ metrics.prophet.mae }}</li>
+                <li>Prophet MSE: {{ metrics.prophet.mse }}</li>
+                <li>LSTM Accuracy: {{ metrics.lstm.accuracy }}%</li>
+                <li>LSTM MAE: {{ metrics.lstm.mae }}</li>
+                <li>LSTM MSE: {{ metrics.lstm.mse }}</li>
+                <li>ARIMA Accuracy: {{ metrics.arima.accuracy }}%</li>
+                <li>ARIMA MAE: {{ metrics.arima.mae }}</li>
+                <li>ARIMA MSE: {{ metrics.arima.mse }}</li>
+            </ul>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+{% endblock %}

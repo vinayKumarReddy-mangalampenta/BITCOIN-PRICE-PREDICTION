@@ -18,9 +18,10 @@
                         <nav class="main-menu">
                             <ul class="menu-area-main">
                                 <li><a href="{{ url_for('viewdata') }}">View Data</a></li>
-                                <li><a href="{{ url_for('algo') }}">Algorithm</a></li>
+                                <li><a href="{{ url_for('accuracy') }}">Algorithm</a></li>
                                 <li><a href="{{ url_for('prediction') }}">Prediction</a></li>
-                                <li class="active"><a href="{{ url_for('profile') }}">Prediction</a></li>
+                                <li><a href="{{ url_for('accuracy') }}">Accuracy</a></li>
+                                <li class="active"><a href="{{ url_for('profile') }}">Profile</a></li>
                                 <li><a href="{{ url_for('index') }}">Logout</a></li>
                             </ul>
                         </nav>
@@ -54,7 +55,7 @@
             flex-direction: column;
             /* justify-content: center; */
             /* align-items: center; */
-            height: 100vh;
+            min-height: 100vh;
             text-align: center;
         }
 
@@ -62,6 +63,7 @@
         .profile-card {
             width: 400px;
             margin: auto;
+            margin-top: 30px;
             background: rgba(0, 0, 0, 0.7);
             padding: 30px;
             border-radius: 20px;

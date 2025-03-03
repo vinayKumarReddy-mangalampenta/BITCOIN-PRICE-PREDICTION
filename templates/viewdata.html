@@ -17,9 +17,11 @@
                         <nav class="main-menu">
                             <ul class="menu-area-main">
                                 <li> <a href="{{ url_for('home') }}">Home</a> </li>
-                                <li class="active"> <a href="{{ url_for('viewdata') }}">View data</a> </li>
-                                <li><a href="{{ url_for('prediction') }}">Prediction</a> </li>
-                                <li><a href="{{ url_for('index') }}">Logout</a> </li>
+                                <li class="active"><a href="{{ url_for('viewdata') }}">View Data</a></li>
+                                <li class=""><a href="{{ url_for('prediction') }}">Prediction</a></li>
+                                <li class=""><a href="{{ url_for('accuracy') }}">Accuracy</a></li>
+                                <li class=""><a href="{{ url_for('profile') }}">Profile</a></li>
+                                <li><a href="{{ url_for('index') }}">Logout</a></li>
                             </ul>
                         </nav>
                     </div>
@@ -33,38 +35,47 @@
 
 {% block content %}
 
-    <style>
-        /* Custom styling for the table */
-        table {
-            width: 100%;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-        td, th {
-            text-align: center;
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-        tr:hover {background-color: #f1f1f1;}
-        
-        /* Set max height and add scrollbars */
-        .table-responsive {
-            max-height: 400px; /* Vertical scroll */
-            overflow-y: auto;
-            overflow-x: auto; /* Horizontal scroll */
-            white-space: nowrap; /* Ensure the table doesn't wrap */
-        }
-    </style>
+<style>
+    /* Custom styling for the table */
+    table {
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
 
-    <div class="container">
-        <h2 class="my-4 text-center">Dataset overview</h2>
-        <div class="table-responsive">
-            {{ table|safe }}
-        </div>
+    th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    td,
+    th {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Set max height and add scrollbars */
+    .table-responsive {
+        max-height: 400px;
+        /* Vertical scroll */
+        overflow-y: auto;
+        overflow-x: auto;
+        /* Horizontal scroll */
+        white-space: nowrap;
+        /* Ensure the table doesn't wrap */
+    }
+</style>
+
+<div class="container">
+    <h2 class="my-4 text-center">Dataset overview</h2>
+    <div class="table-responsive">
+        {{ table|safe }}
     </div>
+</div>
 </div>
 {% endblock %}
