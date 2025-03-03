@@ -19,6 +19,7 @@
                                 <li class="active"> <a href="{{ url_for('home') }}">Home</a> </li>
                                 <li> <a href="{{ url_for('viewdata') }}">View data</a> </li>
                                 <li><a href="{{ url_for('prediction') }}">Prediction</a> </li>
+                                <li> <a href="{{url_for('profile')}}">PROFILE</a> </li>
                                 <li><a href="{{ url_for('index') }}">Logout</a> </li>
                             </ul>
                         </nav>
@@ -32,34 +33,38 @@
 {% endblock %}
 
 {% block content %}
- <style>
-    body{
+<style>
+    body {
         background-image: url(/static/images/home.jpg);
         background-size: cover;
         background-repeat: no-repeat;
     }
-    .home{
+
+    .home {
         padding-top: 200px;
     }
-    h1{
+
+    h1 {
         color: azure;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 40px;
     }
-    h3{
+
+    h3 {
         color: azure;
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 35px;  
+        font-size: 35px;
     }
- </style>
- <body>
+</style>
+
+<body>
     <div class="home">
         <center>
-        <h1><b>Time Series Analysis For Bitcoin Price Prediction</b></h1>
-        <h3><b>Bitcoin frees people from trying to operate in a modern market economy</b></h3>
-       
+            <h1><b>Time Series Analysis For Bitcoin Price Prediction</b></h1>
+            <h3><b>Bitcoin frees people from trying to operate in a modern market economy</b></h3>
+
         </center>
     </div>
- </body>
-    
+</body>
+
 {% endblock %}

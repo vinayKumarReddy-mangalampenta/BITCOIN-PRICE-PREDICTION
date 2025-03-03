@@ -1,5 +1,5 @@
 from math import e
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session, flash
 import pandas as pd
 import os
 from prophet import Prophet
@@ -9,13 +9,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import matplotlib.pyplot as plt
 import io 
 import base64
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+app.secret_key = 'secret_key'
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+DEFAULT_DP = 'default_dp.png'
+
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 
 import mysql.connector
 
 print("Starting connection...")  # Debugging line
-import mysql.connector
 
 mydb = mysql.connector.connect(
     host='localhost',
@@ -28,6 +34,7 @@ mydb = mysql.connector.connect(
 print("Connection successful!")
 
 mycur = mydb.cursor(dictionary=True)  # Keep dictionary mode
+ 
 
 # Load dataset and prepare the Prophet model
 file_path = "BTC-USD.csv"
@@ -36,9 +43,7 @@ df['Date'] = pd.to_datetime(df['Date'])
 df = df[['Date', 'Close']]
 df.rename(columns={'Date': 'ds', 'Close': 'y'}, inplace=True)
 print(df.tail())
-import pandas as pd
 
-# Assume df is your original dataset
 new_data = pd.DataFrame({'ds': ['2025-02-25'], 'y': [(91418 + 88751) / 2]})  # Simple average
 df = pd.concat([df, new_data], ignore_index=True)
 
@@ -77,8 +82,8 @@ def registration():
             # Hash password before storing
             hashed_password = generate_password_hash(password)
 
-            sql = 'INSERT INTO users (name, email, password, Address) VALUES (%s, %s, %s, %s)'
-            mycur.execute(sql, (name, email, hashed_password, address))
+            sql = 'INSERT INTO users (name, email, password, Address, dp) VALUES (%s, %s, %s, %s, %s)'
+            mycur.execute(sql, (name, email, hashed_password, address, DEFAULT_DP))
             mydb.commit()
             return render_template('registration.html', msg='User registered successfully!')
 
@@ -99,12 +104,56 @@ def login():
         if data:
             stored_password = data['password']
             if check_password_hash(stored_password, password):
+                session['email'] = email
                 return redirect('/home')
             return render_template('login.html', msg='Incorrect password!')
 
         return render_template('login.html', msg='User does not exist. Please register.')
 
     return render_template('login.html')
+
+@app.route('/profile')
+def profile():
+    if 'email' not in session:
+        flash("Please log in first")
+        return redirect('/login')
+    sql = 'SELECT * FROM users WHERE email=%s'
+    mycur.execute(sql, (session['email'],))
+    user = mycur.fetchone()
+    return render_template('profile.html', user=user)
+
+@app.route('/edit', methods=['POST'])
+def edit():
+    if 'email' not in session:
+        flash("Please log in first")
+        return redirect('/login')
+
+    name = request.form['name']
+    address = request.form['address']
+
+    sql = 'UPDATE users SET name=%s, Address=%s WHERE email=%s'
+    mycur.execute(sql, (name, address, session['email']))
+    mydb.commit()
+
+    if 'dp' in request.files:
+        file = request.files['dp']
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            sql = 'UPDATE users SET dp=%s WHERE email=%s'
+            mycur.execute(sql, (filename, session['email']))
+            mydb.commit()
+
+    flash("Profile updated successfully")
+    return redirect('/profile')
+
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    flash("Logged out successfully")
+    return redirect('/login')
+
 
 @app.route('/home')
 def home():
@@ -161,6 +210,14 @@ def prediction():
            
 
     return render_template('prediction.html',forecast=forecast.to_dict(orient='records') if forecast is not None else [])
+
+
+
+@app.route('/algo')
+def algo():
+    return render_template('algo.html')
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
